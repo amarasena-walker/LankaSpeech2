@@ -34,6 +34,18 @@ function speakWithBrowserFallback(text, rate = 1) {
   return true;
 }
 
+// ── Backend API location ─────────────────────────────────────
+// If this site is served BY the same server as the backend (e.g. running
+// `npm start` locally, or hosting both together), leave this as ''.
+// If this site is hosted separately as a static site (e.g. GitHub Pages)
+// and the backend is deployed elsewhere (e.g. Render, Railway), put that
+// backend's full URL here instead, with no trailing slash.
+// Example: 'https://lanka-speech-backend.onrender.com'
+const isLocalTest = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const API_BASE_URL = isLocalTest
+  ? '' // same-origin when running `npm start` locally — no change needed
+  : 'https://YOUR-BACKEND-URL.onrender.com'; // ← replace after deploying (step below)
+
 document.addEventListener('DOMContentLoaded', () => {
   // Some browsers load voice lists asynchronously.
   if ('speechSynthesis' in window) {
@@ -293,9 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toneVal = document.getElementById('emotion-select').value;
 
     try {
-      // The site is now served directly by the backend (server.js), so a
-      // relative path always works — no more file:// / localhost guessing.
-      const response = await fetch('/api/tts', {
+      const response = await fetch(`${API_BASE_URL}/api/tts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -496,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.playSample = async function(voiceKey) {
   const sampleText = "මෙය ලංකා ස්පීච් කෘත්‍රීම හඬ තාක්ෂණය පරීක්ෂා කිරීම සඳහා සාදන ලද සාම්පල හඬකි.";
   try {
-    const response = await fetch('/api/tts', {
+    const response = await fetch(`${API_BASE_URL}/api/tts`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

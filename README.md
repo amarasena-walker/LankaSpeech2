@@ -1,74 +1,88 @@
-# Lanka Speech — Setup Guide
+# Lanka Speech — GitHub Pages + Render Setup
 
-This package fixes the issues you ran into and makes the **Generate Speech**
-button actually work, with two layers:
+Your site is on **GitHub Pages**, which only serves static files — it cannot
+run the Node/Express server that talks to Gemini's TTS API. That's why
+Generate Speech doesn't work on `amarasena-walker.github.io/LankaSpeech2`.
 
-1. **Real AI voices (Gemini TTS)** — needs a free Google API key + Node running.
-2. **Instant fallback** — if the server/API key isn't set up yet, the site
-   automatically uses your browser's built-in speech engine instead of
-   showing a dead "offline demo" alert. So the button works either way.
+The fix: host the two halves separately.
 
-## What was wrong before
+```
+frontend/   → push these 3 files to your GitHub Pages repo (as you already do)
+backend/    → deploy this to Render (free) — it's the only part that needs a server
+```
 
-- `package.json` was empty → `npm install`/`npm run dev` failed instantly.
-- The requested `@google/genai` version didn't exist on npm → install failed.
-  Fixed by pinning to `^2.11.0` (currently the latest published version).
-- There was no CORS handling and the page was being opened as
-  `file:///.../index.html`, which browsers block from calling `localhost`.
-- `script.js` was guessing the API host based on `file:` vs `http:` — fragile.
-- PowerShell's execution policy blocked npm scripts on Windows.
+They talk to each other over the internet via a URL, so they don't need to
+be on the same host.
 
-## What this package does differently
+---
 
-Instead of patching around `file://`, the server now **hosts the whole site
-itself** (HTML/CSS/JS + the API) on `http://localhost:3000`. That removes
-the CORS/file-protocol problem entirely — you never open `index.html`
-directly again, you open the server's URL.
+## Step 1 — Deploy the backend to Render (free)
 
-## Setup (Windows, Mac, or Linux)
-
-1. **Install Node.js 18+** if you don't have it: https://nodejs.org (LTS version).
-
-2. **Open a terminal in this folder.**
-   - On Windows, if PowerShell blocks scripts with a `PSSecurityException`,
-     use **Command Prompt (cmd.exe)** instead of PowerShell, or run
-     PowerShell as Administrator and execute:
+1. Push the **`backend/`** folder to its own GitHub repo (e.g. `lanka-speech-backend`).
+   - Simplest way: create a new repo on GitHub, then from inside `backend/`:
      ```
-     Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+     git init
+     git add .
+     git commit -m "Lanka Speech backend"
+     git branch -M main
+     git remote add origin https://github.com/YOUR_USERNAME/lanka-speech-backend.git
+     git push -u origin main
      ```
+2. Go to https://render.com → sign up/log in (free, no credit card needed for the free tier) → **New +** → **Web Service**.
+3. Connect your `lanka-speech-backend` repo.
+4. Settings:
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+   - **Instance Type:** Free
+5. Under **Environment Variables**, add:
+   - `GEMINI_API_KEY` = your key from https://aistudio.google.com/apikey
+6. Click **Create Web Service**. Wait for the deploy to finish (2–3 min).
+7. Render gives you a URL like `https://lanka-speech-backend-xxxx.onrender.com`.
+   Copy it — you need it in Step 2.
 
-3. **Install dependencies:**
+   > A `render.yaml` blueprint is included in this zip if you prefer
+   > Render's "Blueprint" one-click deploy instead of manual setup — put it
+   > at the root of the repo you connect to Render.
+
+   > **Free tier note:** Render's free web services "spin down" after
+   > ~15 minutes of no traffic and take ~30–60 seconds to wake back up on
+   > the next request. The first Generate click after idle time may be slow
+   > — that's normal, not a bug.
+
+## Step 2 — Point your frontend at the backend
+
+1. Open `frontend/script.js`.
+2. Near the top, find:
+   ```js
+   const API_BASE_URL = 'https://YOUR-BACKEND-URL.onrender.com';
    ```
-   npm install
+3. Replace it with the real URL Render gave you, e.g.:
+   ```js
+   const API_BASE_URL = 'https://lanka-speech-backend-xxxx.onrender.com';
    ```
+4. Commit and push `index.html`, `styles.css`, and `script.js` to your
+   `LankaSpeech2` GitHub Pages repo (same as before).
+5. Give GitHub Pages a minute to rebuild, then reload
+   `https://amarasena-walker.github.io/LankaSpeech2/`.
 
-4. **Add your Gemini API key** (only needed for real AI voices — the site
-   still works without this, using the browser fallback):
-   - Copy `.env.example` to `.env`
-   - Get a free key at https://aistudio.google.com/apikey
-   - Paste it in: `GEMINI_API_KEY=your_key_here`
+That's it — Generate Speech will now call your Render backend, which calls
+Gemini, and returns real audio back to the page.
 
-5. **Start the server:**
-   ```
-   npm start
-   ```
+## Built-in fallback
 
-6. **Open the site:** http://localhost:3000
+If the backend is asleep, unreachable, or the API key is missing/invalid,
+the site automatically speaks the text using your browser's own voice
+engine instead of showing a dead error — so it's never a hard failure,
+just lower quality until the real backend responds.
 
-That's it — press "Generate Speech" and it will call Gemini's TTS model
-and play/download a real WAV file. If the key is missing or the request
-fails for any reason, the browser's own speech synthesis speaks the text
-instead, so the button is never a dead end.
+## Local testing (optional)
 
-## Notes
-
-- Voice names in the UI (Nethmi, Dinithi, Yasara, Kavindu, Tharindu) map
-  directly to Gemini's prebuilt voices `Kore`, `Charon`, `Puck`, `Zephyr`,
-  and `Fenrir`.
-- The "Emotion" dropdown is sent to Gemini as a style instruction
-  (e.g. "Say the following calmly and gently: ...").
-- Real Gemini audio is returned as a `data:audio/wav;base64,...` URL, so
-  no extra file storage/cleanup is needed on the server.
-- The browser fallback uses `speechSynthesis`, so voice quality/availability
-  (especially for Sinhala) depends on the voices installed on your OS/browser.
-  Chrome and Edge on Windows generally have the widest voice coverage.
+You can still run everything on one machine before deploying:
+```
+cd backend
+npm install
+cp .env.example .env   # then paste your GEMINI_API_KEY in
+npm start
+```
+Open http://localhost:3000 — this serves the copy of the frontend bundled
+in `backend/public/` directly, with `API_BASE_URL` not needed (same origin).
