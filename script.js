@@ -4,7 +4,42 @@
  * Powered by Bestlytical
  */
 
+// ── Browser Speech Synthesis Fallback ────────────────────────
+// Used whenever the Gemini-powered /api/tts backend is unreachable or not
+// configured (e.g. no GEMINI_API_KEY yet). Keeps the "Generate" and
+// "Play Sample" buttons functional out of the box with zero setup.
+let fallbackUtterance = null;
+
+function pickFallbackVoice(text) {
+  const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  const isSinhala = /[\u0D80-\u0DFF]/.test(text);
+  if (isSinhala) {
+    const siVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('si'));
+    if (siVoice) return siVoice;
+  }
+  const enVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+  return enVoice || voices[0] || null;
+}
+
+function speakWithBrowserFallback(text, rate = 1) {
+  if (!('speechSynthesis' in window)) return false;
+
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  const voice = pickFallbackVoice(text);
+  if (voice) utterance.voice = voice;
+  utterance.rate = Math.max(0.5, Math.min(2, rate));
+  fallbackUtterance = utterance;
+  window.speechSynthesis.speak(utterance);
+  return true;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Some browsers load voice lists asynchronously.
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
+
   
   // ── Theme Toggle (Dark / Light Mode) ────────────────────────
   const themeToggle = document.getElementById('theme-toggle');
@@ -240,6 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let activeAudio = null;
   let audioTimer = null;
+  let usingFallbackSpeech = false;
 
   generateBtn.addEventListener('click', async () => {
     const textVal = textarea.value.trim();
@@ -257,7 +293,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const toneVal = document.getElementById('emotion-select').value;
 
     try {
-      // Connect to the local backend endpoint
+      // The site is now served directly by the backend (server.js), so a
+      // relative path always works — no more file:// / localhost guessing.
       const response = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -268,9 +305,9 @@ document.addEventListener('DOMContentLoaded', () => {
         })
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Backend TTS generation failed.');
+        throw new Error(data.error || `Backend TTS generation failed (HTTP ${response.status}).`);
       }
 
       // Load synthesized audio output
@@ -279,6 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(audioTimer);
       }
 
+      usingFallbackSpeech = false;
       activeAudio = new Audio(data.audioUrl);
       activeAudio.playbackRate = parseFloat(speedSlider.value);
 
@@ -320,27 +358,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (err) {
       console.error(err);
-      alert("TTS Engine requires the backend server running at http://localhost:3000 to process audio. Showing offline demo mode.");
-      
-      // Fallback offline simulation
+
+      // Fallback: use the browser's built-in speech synthesis so pressing
+      // Generate always produces *some* audible speech, even if the
+      // Gemini-powered backend/API key isn't set up yet.
       if (activeAudio) {
         activeAudio.pause();
+        clearInterval(audioTimer);
       }
       activeAudio = null;
       downloadAudioLink.href = '#';
-      
+
+      const usedFallback = speakWithBrowserFallback(textVal, parseFloat(speedSlider.value));
+      usingFallbackSpeech = usedFallback;
+
       const charLen = textVal.length;
       const totalSec = Math.max(3, Math.min(60, Math.ceil(charLen / 15)));
       timeTotal.textContent = `0:${totalSec < 10 ? '0' : ''}${totalSec}`;
-      
+
       audioResult.style.display = 'block';
       setTimeout(() => {
         audioResult.classList.add('visible');
       }, 50);
-      
-      audioPlayBtn.textContent = '▶';
+
+      audioPlayBtn.textContent = usedFallback ? '⏸️' : '▶';
       audioProgress.value = 0;
       timeCurrent.textContent = '0:00';
+
+      if (!usedFallback) {
+        alert(
+          "Couldn't reach the AI voice backend (" + err.message + "). " +
+          "Make sure the server is running (npm start) and GEMINI_API_KEY is set in .env. " +
+          "Your browser also doesn't support offline speech playback, so no audio could be played."
+        );
+      }
     } finally {
       generateBtn.disabled = false;
       generateBtn.innerHTML = originalBtnText;
@@ -349,9 +400,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Audio Playback action
   audioPlayBtn.addEventListener('click', () => {
+    if (usingFallbackSpeech && 'speechSynthesis' in window) {
+      const synth = window.speechSynthesis;
+      if (synth.speaking && !synth.paused) {
+        synth.pause();
+        audioPlayBtn.textContent = '▶';
+      } else if (synth.paused) {
+        synth.resume();
+        audioPlayBtn.textContent = '⏸️';
+      } else if (fallbackUtterance) {
+        synth.speak(fallbackUtterance);
+        audioPlayBtn.textContent = '⏸️';
+      }
+      return;
+    }
+
     if (!activeAudio) {
-      // Simulate player if offline
-      alert("Offline demo sound playing simulation.");
+      alert("Nothing generated yet — press \"Generate Speech\" first.");
       return;
     }
 
@@ -370,6 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const seekTime = (parseFloat(audioProgress.value) / 100) * activeAudio.duration;
       activeAudio.currentTime = seekTime;
     }
+    // Seeking isn't supported for the browser speech-synthesis fallback.
   });
 
   // ── Scroll Triggered Animation Observer ────────────────────
@@ -428,24 +494,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Global voice sample play trigger
 window.playSample = async function(voiceKey) {
+  const sampleText = "මෙය ලංකා ස්පීච් කෘත්‍රීම හඬ තාක්ෂණය පරීක්ෂා කිරීම සඳහා සාදන ලද සාම්පල හඬකි.";
   try {
     const response = await fetch('/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        text: "මෙය ලංකා ස්පීච් කෘත්‍රීම හඬ තාක්ෂණය පරීක්ෂා කිරීම සඳහා සාදන ලද සාම්පල හඬකි.",
+        text: sampleText,
         voice: voiceKey,
         tone: "cheerful"
       })
     });
-    const data = await response.json();
-    if (data.success && data.audioUrl) {
+    const data = await response.json().catch(() => ({}));
+    if (response.ok && data.success && data.audioUrl) {
       const audio = new Audio(data.audioUrl);
       audio.play();
     } else {
-      alert(`Playing offline preview sample voice tone: ${voiceKey}`);
+      speakWithBrowserFallback(sampleText);
     }
-  } catch(e) {
-    alert(`Playing offline preview sample voice tone: ${voiceKey}`);
+  } catch (e) {
+    speakWithBrowserFallback(sampleText);
   }
 };
