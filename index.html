@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lanka Speech — Premium AI Text-to-Speech for Sinhala & English</title>
+  <meta name="description" content="Transform Sinhala and English text into natural AI speech. Experience human-like, high-fidelity neural voices. Powered by Bestlytical.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ── Navigation Bar ────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-container">
+      <div class="nav-logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-icon-svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 16H9V8H11V16ZM15 16H13V8H15V16Z" fill="currentColor"/>
+          <path d="M7 14H5V10H7V14ZM19 14H17V10H19V14Z" fill="currentColor" opacity="0.6"/>
+        </svg>
+        <span>Lanka Speech</span>
+      </div>
+      <div class="nav-links" id="nav-links">
+        <a href="#hero" class="nav-link active">Home</a>
+        <a href="#voices" class="nav-link">Voices</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#workspace" class="nav-link">Studio</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+          <span class="sun-icon">☀️</span>
+          <span class="moon-icon">🌙</span>
+        </button>
+        <a href="#workspace" class="btn btn-primary btn-sm">Try Free</a>
+      </div>
+      <div class="mobile-menu-toggle" id="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Hero Section ──────────────────────────────────────────── -->
+  <section class="hero" id="hero">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <div class="badge badge-accent animate-on-scroll">
+          <span>✨</span> Powered by Bestlytical
+        </div>
+        <h1 class="animate-on-scroll delay-1">
+          Transform Sinhala Text <br>into <span class="highlight">Natural AI Speech</span>
+        </h1>
+        <p class="animate-on-scroll delay-2">
+          Experience human-like Sinhala text-to-speech with high-fidelity, neural voices. Powering content creation, apps, and accessibility across Sri Lanka.
+        </p>
+        <div class="hero-buttons animate-on-scroll delay-3">
+          <a href="#workspace" class="btn btn-primary btn-lg">Start for Free</a>
+          <a href="#voices" class="btn btn-secondary btn-lg">View Demo Voices</a>
+        </div>
+        <div class="hero-social-proof animate-on-scroll delay-4">
+          <div class="hero-avatars">
+            <span class="avatar-sm nethmi">👩</span>
+            <span class="avatar-sm dinithi">👩‍🏫</span>
+            <span class="avatar-sm yasara">👩‍🦱</span>
+            <span class="avatar-sm kavindu">👦</span>
+            <span class="avatar-sm tharindu">🧔</span>
+          </div>
+          <span>50K+ users generate AI voices every month with Lanka Speech</span>
+        </div>
+      </div>
+
+      <div class="hero-demo">
+        <div class="demo-card color-shift-border">
+          <div class="demo-status">
+            <div class="pulse"></div>
+            <span>AI Studio active</span>
+          </div>
+          <div class="demo-waveform" id="hero-waveform">
+            <!-- Populated via script.js -->
+          </div>
+          <div class="demo-text-preview" id="hero-text-preview">
+            "හෙලෝ, මෙය ලංකා ස්පීච් මඟින් ජනනය කරන ලද කෘත්‍රීම හඬකි."
+          </div>
+          <div class="demo-controls">
+            <div class="demo-select">
+              <label for="hero-voice-select">Voice</label>
+              <select id="hero-voice-select">
+                <option value="Kore">Nethmi (Warm Female)</option>
+                <option value="Charon">Dinithi (Natural Narrator)</option>
+                <option value="Puck">Yasara (Expressive Storyteller)</option>
+                <option value="Zephyr">Kavindu (Versatile Male)</option>
+                <option value="Fenrir">Tharindu (Deep & Authoritative)</option>
+              </select>
+            </div>
+            <div class="demo-select">
+              <label for="hero-lang-select">Language</label>
+              <select id="hero-lang-select">
+                <option value="si" selected>සිංහල (Sinhala)</option>
+                <option value="en">English (English)</option>
+              </select>
+            </div>
+          </div>
+          <button class="demo-generate-btn" onclick="document.getElementById('workspace').scrollIntoView({behavior: 'smooth'})">
+            <span>✨</span> Open Studio Workspace
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Voices Section ────────────────────────────────────────── -->
+  <section class="voices" id="voices">
+    <div class="container">
+      <div class="voices-header">
+        <div class="badge badge-accent animate-on-scroll">Premium Voice Talent</div>
+        <h2 class="section-title animate-on-scroll delay-1">Select Your AI Voice</h2>
+        <p class="section-subtitle animate-on-scroll delay-2">5 Premium Sinhala Voices Available. Tuned to perfection with rich textures and emotional versatility.</p>
+      </div>
+
+      <div class="voices-grid">
+        <div class="voice-card active animate-on-scroll" data-voice="Kore">
+          <div class="voice-avatar nethmi">👩<div class="avatar-ring"></div></div>
+          <div class="voice-name">Nethmi</div>
+          <div class="voice-role">Professional Voiceover</div>
+          <div class="voice-tags">
+            <span class="voice-tag">Friendly</span>
+            <span class="voice-tag">Warm</span>
+            <span class="voice-tag">Conversational</span>
+          </div>
+          <button class="voice-play-btn" aria-label="Play Sample Nethmi" onclick="event.stopPropagation(); playSample('Kore')">▶</button>
+        </div>
+
+        <div class="voice-card animate-on-scroll delay-1" data-voice="Charon">
+          <div class="voice-avatar dinithi">👩‍🏫<div class="avatar-ring"></div></div>
+          <div class="voice-name">Dinithi</div>
+          <div class="voice-role">Natural Narrator</div>
+          <div class="voice-tags">
+            <span class="voice-tag">Clear</span>
+            <span class="voice-tag">Trustworthy</span>
+            <span class="voice-tag">Informative</span>
+          </div>
+          <button class="voice-play-btn" aria-label="Play Sample Dinithi" onclick="event.stopPropagation(); playSample('Charon')">▶</button>
+        </div>
+
+        <div class="voice-card animate-on-scroll delay-2" data-voice="Puck">
+          <div class="voice-avatar yasara">👩‍🦱<div class="avatar-ring"></div></div>
+          <div class="voice-name">Yasara</div>
+          <div class="voice-role">Expressive Storyteller</div>
+          <div class="voice-tags">
+            <span class="voice-tag">Energetic</span>
+            <span class="voice-tag">Dramatic</span>
+            <span class="voice-tag">Emotional</span>
+          </div>
+          <button class="voice-play-btn" aria-label="Play Sample Yasara" onclick="event.stopPropagation(); playSample('Puck')">▶</button>
+        </div>
+
+        <div class="voice-card animate-on-scroll delay-3" data-voice="Zephyr">
+          <div class="voice-avatar kavindu">👦<div class="avatar-ring"></div></div>
+          <div class="voice-name">Kavindu</div>
+          <div class="voice-role">Versatile Voice</div>
+          <div class="voice-tags">
+            <span class="voice-tag">Modern</span>
+            <span class="voice-tag">Youthful</span>
+            <span class="voice-tag">Confident</span>
+          </div>
+          <button class="voice-play-btn" aria-label="Play Sample Kavindu" onclick="event.stopPropagation(); playSample('Zephyr')">▶</button>
+        </div>
+
+        <div class="voice-card animate-on-scroll delay-4" data-voice="Fenrir">
+          <div class="voice-avatar tharindu">🧔<div class="avatar-ring"></div></div>
+          <div class="voice-name">Tharindu</div>
+          <div class="voice-role">Deep & Authoritative</div>
+          <div class="voice-tags">
+            <span class="voice-tag">Powerful</span>
+            <span class="voice-tag">Serene</span>
+            <span class="voice-tag">Announcer</span>
+          </div>
+          <button class="voice-play-btn" aria-label="Play Sample Tharindu" onclick="event.stopPropagation(); playSample('Fenrir')">▶</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Interactive Studio Section ────────────────────────────── -->
+  <section class="demo-section" id="workspace">
+    <div class="container">
+      <div class="demo-section-header">
+        <div class="badge badge-accent animate-on-scroll">Voice Workspace</div>
+        <h2 class="section-title animate-on-scroll delay-1">Lanka Speech Voice Studio</h2>
+        <p class="section-subtitle animate-on-scroll delay-2">Type in Sinhala, English, or Singlish. Play samples and download high-quality audio files instantly.</p>
+      </div>
+
+      <div class="demo-workspace">
+        <!-- Left: Inputs -->
+        <div class="demo-left">
+          <!-- Text Input Panel -->
+          <div class="demo-panel animate-on-scroll">
+            <div class="demo-panel-header">
+              <div class="demo-step-number">1</div>
+              <div class="demo-panel-title">Enter Text (Sinhala, English, or Singlish)</div>
+            </div>
+            <textarea id="demo-text-input" class="demo-textarea" placeholder="ඔබේ සිංහල පෙළ මෙහි ටයිප් කරන්න... (Type your script here)"></textarea>
+            <div class="demo-textarea-footer">
+              <div class="demo-textarea-actions">
+                <button id="paste-btn">📋 Paste</button>
+                <button id="clear-btn">🧹 Clear</button>
+              </div>
+              <div class="demo-language-badge" id="detected-language-badge">
+                🌐 Detected: <span id="detected-language">English</span>
+              </div>
+              <div class="demo-char-count" id="char-count">0 / 5000 Characters</div>
+            </div>
+          </div>
+
+          <!-- Voice Cast Selection -->
+          <div class="demo-panel animate-on-scroll delay-1">
+            <div class="demo-panel-header">
+              <div class="demo-step-number">2</div>
+              <div class="demo-panel-title">Choose AI Voice</div>
+            </div>
+            <div class="demo-voices-grid">
+              <div class="demo-voice-mini active" data-voice="Kore">
+                <div class="mini-avatar nethmi">👩</div>
+                <span class="demo-voice-mini-name">Nethmi</span>
+                <span class="mini-check">✓</span>
+              </div>
+              <div class="demo-voice-mini" data-voice="Charon">
+                <div class="mini-avatar dinithi">👩‍🏫</div>
+                <span class="demo-voice-mini-name">Dinithi</span>
+                <span class="mini-check">✓</span>
+              </div>
+              <div class="demo-voice-mini" data-voice="Puck">
+                <div class="mini-avatar yasara">👩‍🦱</div>
+                <span class="demo-voice-mini-name">Yasara</span>
+                <span class="mini-check">✓</span>
+              </div>
+              <div class="demo-voice-mini" data-voice="Zephyr">
+                <div class="mini-avatar kavindu">👦</div>
+                <span class="demo-voice-mini-name">Kavindu</span>
+                <span class="mini-check">✓</span>
+              </div>
+              <div class="demo-voice-mini" data-voice="Fenrir">
+                <div class="mini-avatar tharindu">🧔</div>
+                <span class="demo-voice-mini-name">Tharindu</span>
+                <span class="mini-check">✓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Settings and Audio output -->
+        <div class="demo-right">
+          <div class="demo-panel animate-on-scroll">
+            <div class="demo-panel-header">
+              <div class="demo-step-number">3</div>
+              <div class="demo-panel-title">Voice Settings</div>
+            </div>
+            
+            <div class="voice-settings">
+              <div class="setting-row">
+                <span class="setting-label">Speed</span>
+                <input type="range" class="setting-slider" id="speed-slider" min="0.5" max="2" step="0.1" value="1">
+                <span class="setting-value" id="speed-value">1.0x</span>
+              </div>
+
+              <div class="setting-row">
+                <span class="setting-label">Pitch</span>
+                <input type="range" class="setting-slider" id="pitch-slider" min="0" max="100" step="1" value="50">
+                <span class="setting-value" id="pitch-value">50%</span>
+              </div>
+
+              <div class="setting-row">
+                <span class="setting-label">Emotion</span>
+                <select class="setting-select" id="emotion-select">
+                  <option value="cheerful">😊 Neutral / Cheerful</option>
+                  <option value="professional">💼 Professional</option>
+                  <option value="calm">😌 Calm</option>
+                  <option value="dramatic">🎭 Cinematic</option>
+                </select>
+              </div>
+
+              <div class="setting-row">
+                <span class="setting-label">Pause Control</span>
+                <select class="setting-select" id="pause-select">
+                  <option value="natural">Natural pauses</option>
+                  <option value="short">Short pauses</option>
+                </select>
+              </div>
+
+              <div class="setting-row">
+                <span class="setting-label">Output Quality</span>
+                <select class="setting-select" id="quality-select">
+                  <option value="high">High (MP3 320kbps)</option>
+                  <option value="standard">Standard (MP3 192kbps)</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="generate-speech-btn" id="generate-btn" style="margin-top: 24px;">
+              <span>✨</span> Generate Speech
+            </button>
+          </div>
+
+          <!-- Generated audio player -->
+          <div class="audio-result animate-scale" id="audio-result" style="display: none;">
+            <div class="audio-result-header">
+              <span>🔊</span> Generated Audio
+            </div>
+            <div class="audio-waveform-player">
+              <button class="audio-play-btn" id="audio-play-btn" aria-label="Play Synthesis">▶</button>
+              <div class="audio-timeline">
+                <input type="range" class="audio-progress" id="audio-progress" min="0" max="100" value="0">
+                <div class="audio-times">
+                  <span id="audio-time-current">0:00</span>
+                  <span id="audio-time-total">0:15</span>
+                </div>
+              </div>
+            </div>
+            <div class="audio-actions">
+              <a class="audio-action-btn" id="download-audio-link" download="lanka-speech.wav" href="#">
+                <span class="action-icon">💾</span>
+                <span>Download MP3</span>
+              </a>
+              <button class="audio-action-btn" id="copy-link-btn">
+                <span class="action-icon">🔗</span>
+                <span>Copy Link</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features Section ──────────────────────────────────────── -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="features-header">
+        <div class="badge badge-accent animate-on-scroll">Features</div>
+        <h2 class="section-title animate-on-scroll delay-1">Why Lanka Speech</h2>
+        <p class="section-subtitle animate-on-scroll delay-2">We build custom engines that outpace generic global providers, specialized specifically for Sinhala, Singlish, and English narration.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card animate-on-scroll">
+          <div class="feature-icon speed">⚡</div>
+          <h3>Fast AI Generation</h3>
+          <p>Generate high-quality Sinhala speech in seconds with our advanced AI models.</p>
+        </div>
+        <div class="feature-card animate-on-scroll delay-1">
+          <div class="feature-icon stability">🎙️</div>
+          <h3>Natural Sinhala Voices</h3>
+          <p>Human-like, expressive Sinhala voices that sound natural and engaging.</p>
+        </div>
+        <div class="feature-card animate-on-scroll delay-2">
+          <div class="feature-icon quality">💾</div>
+          <h3>High Quality MP3</h3>
+          <p>Download in premium quality MP3 format perfect for any platform.</p>
+        </div>
+        <div class="feature-card animate-on-scroll">
+          <div class="feature-icon language">🌐</div>
+          <h3>Works Everywhere</h3>
+          <p>Access Lanka Speech from any device, anytime, anywhere in the world.</p>
+        </div>
+        <div class="feature-card animate-on-scroll delay-1">
+          <div class="feature-icon stability">🔒</div>
+          <h3>Secure Processing</h3>
+          <p>Your data is processed securely and never stored on our servers.</p>
+        </div>
+        <div class="feature-card animate-on-scroll delay-2">
+          <div class="feature-icon quality">🎭</div>
+          <h3>Multiple Voice Styles</h3>
+          <p>Choose from multiple voices, emotions and styles for any type of content.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Pricing Section ───────────────────────────────────────── -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="pricing-header">
+        <div class="badge badge-accent animate-on-scroll">Pricing Plans</div>
+        <h2 class="section-title animate-on-scroll delay-1">Flexible Pricing for Everyone</h2>
+        <div class="pricing-toggle animate-on-scroll delay-2">
+          <span>Monthly Billing</span>
+          <div class="pricing-toggle-switch" id="pricing-toggle"></div>
+          <span>Annual Billing</span>
+          <span class="pricing-save-badge">Save 30%</span>
+        </div>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Plan 1 -->
+        <div class="pricing-card animate-on-scroll">
+          <div class="pricing-plan-name">Free</div>
+          <p class="pricing-plan-desc">Experience premium Sinhala AI TTS voiceovers for local projects.</p>
+          <div class="pricing-price">
+            <span class="pricing-currency">$</span>
+            <span class="pricing-amount" data-monthly="0" data-annual="0">0</span>
+            <span class="pricing-period">/month</span>
+          </div>
+          <button class="btn btn-outline pricing-cta" onclick="document.getElementById('workspace').scrollIntoView({behavior: 'smooth'})">Get Started</button>
+        </div>
+
+        <!-- Plan 2 -->
+        <div class="pricing-card featured animate-on-scroll delay-1">
+          <div class="pricing-plan-name">Creator Pro</div>
+          <p class="pricing-plan-desc">For digital creators, YouTubers, advertisers, and commercial studios.</p>
+          <div class="pricing-price">
+            <span class="pricing-currency">$</span>
+            <span class="pricing-amount" data-monthly="29" data-annual="19">29</span>
+            <span class="pricing-period">/month</span>
+          </div>
+          <button class="btn btn-primary pricing-cta" onclick="alert('Thank you for choosing Creator Pro! Proceeding to Bestlytical secure checkout...')">Start Pro Free Trial</button>
+        </div>
+
+        <!-- Plan 3 -->
+        <div class="pricing-card animate-on-scroll delay-2">
+          <div class="pricing-plan-name">Enterprise</div>
+          <p class="pricing-plan-desc">For large scale production studios, corporate websites, and apps.</p>
+          <div class="pricing-price">
+            <span class="pricing-currency">$</span>
+            <span class="pricing-amount" data-monthly="99" data-annual="79">99</span>
+            <span class="pricing-period">/month</span>
+          </div>
+          <button class="btn btn-outline pricing-cta" onclick="alert('Connecting with Bestlytical Enterprise Relations Team...')">Contact Sales</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-main">
+        <div class="footer-brand animate-on-scroll">
+          <div class="footer-brand-logo">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-icon-svg" style="width: 36px; height: 36px;">
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 16H9V8H11V16ZM15 16H13V8H15V16Z" fill="currentColor"/>
+            </svg>
+            <span>Lanka Speech</span>
+          </div>
+          <p>Transforming text to human-like AI voiceovers for digital content creators, advertisers, and businesses across Sri Lanka.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="Github">🐙</a>
+            <a href="#" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+
+        <div class="footer-column animate-on-scroll delay-1">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#voices">Voices Cast</a></li>
+            <li><a href="#workspace">Studio Editor</a></li>
+            <li><a href="#pricing">Pricing Plans</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column animate-on-scroll delay-2">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">API Reference</a></li>
+            <li><a href="#">Platform Status</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column animate-on-scroll delay-3">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Bestlytical Careers</a></li>
+            <li><a href="#">Contact Support</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copyright">
+          © 2026 Lanka Speech. All rights reserved.
+        </div>
+        <div class="footer-powered">
+          Powered by <span class="bestlytical-logo">Bestlytical</span>
+        </div>
+        <div class="footer-made">
+          Made with <span class="heart">❤️</span> in Sri Lanka
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
